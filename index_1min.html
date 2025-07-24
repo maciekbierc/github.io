@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Licznik czasu aktywności</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+    #czas {
+      font-size: 2em;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Licznik czasu aktywności przy komputerze</h1>
+  <p>Strona liczy czas tylko wtedy, gdy wykrywa ruch myszki lub klawiatury.</p>
+  <div id="czas">00:00:00</div>
+
+  <script>
+    let aktywny = false;
+    let czas = 0;
+    let nieaktywnyTimer;
+
+    function formatujCzas(s) {
+      const godziny = String(Math.floor(s / 3600)).padStart(2, '0');
+      const minuty = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+      const sekundy = String(s % 60).padStart(2, '0');
+      return `${godziny}:${minuty}:${sekundy}`;
+    }
+
+    function aktualizujWyswietlanie() {
+      document.getElementById('czas').textContent = formatujCzas(czas);
+    }
+
+    function startLiczenia() {
+      if (!aktywny) {
+        aktywny = true;
+        timer = setInterval(() => {
+          czas++;
+          aktualizujWyswietlanie();
+        }, 1000);
+      }
+    }
+
+    function zatrzymajLiczenie() {
+      if (aktywny) {
+        aktywny = false;
+        clearInterval(timer);
+      }
+    }
+
+    function zresetujNieaktywnosc() {
+      clearTimeout(nieaktywnyTimer);
+      nieaktywnyTimer = setTimeout(() => {
+        zatrzymajLiczenie();
+      }, 60000); // 5 minut
+      startLiczenia();
+    }
+
+    document.addEventListener('mousemove', zresetujNieaktywnosc);
+    document.addEventListener('keydown', zresetujNieaktywnosc);
+
+    aktualizujWyswietlanie();
+  </script>
+</body>
+</html>
