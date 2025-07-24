@@ -13,17 +13,24 @@
       font-size: 2em;
       margin-top: 1em;
     }
+    #status {
+      margin-top: 1em;
+      font-weight: bold;
+      color: green;
+    }
   </style>
 </head>
 <body>
   <h1>Licznik czasu aktywności przy komputerze</h1>
   <p>Strona liczy czas tylko wtedy, gdy wykrywa ruch myszki lub klawiatury.</p>
   <div id="czas">00:00:00</div>
+  <div id="status">🟢 Aktywny</div>
 
   <script>
     let aktywny = false;
     let czas = 0;
     let nieaktywnyTimer;
+    let timer;
 
     function formatujCzas(s) {
       const godziny = String(Math.floor(s / 3600)).padStart(2, '0');
@@ -39,6 +46,8 @@
     function startLiczenia() {
       if (!aktywny) {
         aktywny = true;
+        document.getElementById('status').textContent = '🟢 Aktywny';
+        document.getElementById('status').style.color = 'green';
         timer = setInterval(() => {
           czas++;
           aktualizujWyswietlanie();
@@ -50,6 +59,8 @@
       if (aktywny) {
         aktywny = false;
         clearInterval(timer);
+        document.getElementById('status').textContent = '🔴 Nieaktywny';
+        document.getElementById('status').style.color = 'red';
       }
     }
 
@@ -57,7 +68,7 @@
       clearTimeout(nieaktywnyTimer);
       nieaktywnyTimer = setTimeout(() => {
         zatrzymajLiczenie();
-      }, 60000); // 5 minut
+      }, 60000); // 1 minuta
       startLiczenia();
     }
 
